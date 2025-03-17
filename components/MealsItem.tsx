@@ -1,11 +1,18 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
 import { MealsType } from '../screens/MealsOverviewScreen';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
   data: MealsType;
 };
 const MealsItem = ({data}:Props) => {
+    const navigate = useNavigation();
+    useLayoutEffect(()=>{
+        navigate.setOptions({
+            title:data.id
+        });
+    },[navigate])
   return (
     <View style={card}>
         <Image style={img} source={{ uri: data.imageUrl }} />
