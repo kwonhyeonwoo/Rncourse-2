@@ -1,24 +1,21 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createDrawerNavigator} from "@react-navigation/drawer";
 import { StyleSheet, Text, View } from 'react-native';
-import CategoryScreen from './screens/CategoryScreen';
-import MealsOverviewScreen from './screens/MealsOverviewScreen';
+import UserScreen from './screens/UserScreen';
 
-const Stack = createNativeStackNavigator();
+const Draw = createDrawerNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="category">
-        <Stack.Screen name="category" component={CategoryScreen} options={{
-          title:"All Category",
-          headerStyle:{backgroundColor:"#351401"},
-          headerTitleStyle:{color:"white"},
-          contentStyle:{backgroundColor:"#3f2f25"}
-        }}/>
-        <Stack.Screen name="mealsOverview" component={MealsOverviewScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <Draw.Navigator>
+        <Draw.Screen name='user' options={{
+          drawerLabel:"회원유저",
+          drawerActiveBackgroundColor:"orange",
+        }} component={UserScreen}/>
+      </Draw.Navigator>
+    </NavigationContainer>  
   );
 }
 
