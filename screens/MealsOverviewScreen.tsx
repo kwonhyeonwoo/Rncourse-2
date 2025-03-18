@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useRoute } from '@react-navigation/native'
+import { Route, RouteProp, useRoute } from '@react-navigation/native'
 import { MEALS } from '../assets/data/dummy-data';
 import MealsItem from '../components/MealsItem';
 
@@ -18,8 +18,14 @@ export type MealsType = {
   title:string;
 };
 
+type MealOverViewProp = {
+  mealOverview:{
+    id:string;
+  }
+}
+
 const MealsOverviewScreen = () => {
-  const {params} = useRoute();
+  const { params } = useRoute<RouteProp<MealOverViewProp,"mealOverview">>();
   const data = MEALS.filter((item) => {
     return item.categoryIds.indexOf(params.id) >= 0;
   });

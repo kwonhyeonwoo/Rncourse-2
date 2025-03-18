@@ -1,32 +1,43 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useLayoutEffect } from 'react'
 import { MealsType } from '../screens/MealsOverviewScreen';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Props = {
   data: MealsType;
 };
+
+type DetailProps={
+  mealDetail:{
+    id:string;
+  }
+}
 const MealsItem = ({data}:Props) => {
-    const navigate = useNavigation();
+    const navigate = useNavigation<NativeStackNavigationProp<DetailProps>>();
+    const handleDetailNav = ()=>{
+      navigate.navigate('mealDetail',{id:data.id})
+    }
     useLayoutEffect(()=>{
         navigate.setOptions({
             title:data.id
         });
     },[navigate])
   return (
-    <View style={card}>
-        <Image style={img} source={{ uri: data.imageUrl }} />
+    <Pressable style={card} onPress={handleDetailNav}>
+      <View style={img}>
+        <Image height={200} source={{ uri: data.imageUrl }} />
+      </View>
       <Text style={title}>{data.title}</Text>
       <View style={infoWrapper}>
         <Text>{data.duration}m</Text>
         <Text>{data.complexity}</Text>
         <Text>{data.affordability}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
-// duration , imageUrl, complexity,affordability,title
 export default MealsItem;
 
 const { card, img, infoWrapper, title } = StyleSheet.create({
