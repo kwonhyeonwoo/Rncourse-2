@@ -1,16 +1,13 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Button,
-} from "react-native";
-import React, { useLayoutEffect } from "react";
+import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { MEALS } from "../assets/data/dummy-data";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import IconButton from "../components/IconButton";
+import { useFavorite } from "../store/context/favorites-context";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/redux/store";
+import { favoriteActions } from "../store/redux/favorite-slice";
 
 type RootStackParamList = {
   mealDetail: {
@@ -18,18 +15,43 @@ type RootStackParamList = {
   };
 };
 const MealDetailScreen = () => {
+  const dispatch = useDispatch();
   const { params } = useRoute<RouteProp<RootStackParamList, "mealDetail">>();
+  const ids = useSelector((state:RootState)=>state.favorite.ids);
+  // const favoriteCtx = useFavorite();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [isFavorite, setIsFavorite] = useState(false);
+
   const selectedMeals = MEALS.find((meals) => meals.id === params.id);
-  const handleRightBtn = () => {};
-  useLayoutEffect(() => {
+
+  const handleRightBtn = () => {
+    if (isFavorite) {
+      dispatch(favoriteActions.remove(params.id));
+    } else {
+      console.log("hello");
+      dispatch(favoriteActions.add(params.id))
+    }
+  };
+  useEffect(() => {
+    if (ids.includes(params.id)) {
+      setIsFavorite(true);
+    } else {
+      setIsFavorite(false);
+    }
     navigation.setOptions({
       headerRight: () => {
-        return <IconButton icon="star" size={24} color="white" handlePress={handleRightBtn}/>
+        return (
+          <IconButton
+            icon={isFavorite ? "star" : "ellipse"}
+            size={24}
+            color="white"
+            handlePress={handleRightBtn}
+          />
+        );
       },
     });
-  }, [navigation]);
+  }, [isFavorite, navigation, ids]);
   return (
     <ScrollView style={wrapper}>
       <Image
@@ -62,7 +84,6 @@ const MealDetailScreen = () => {
     </ScrollView>
   );
 };
-//  affordability,complexity,duration,imageUrl,ingredients,steps
 export default MealDetailScreen;
 
 const {
